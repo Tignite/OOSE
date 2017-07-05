@@ -11,7 +11,8 @@ public class testClass {
 		BigMatrix init = null;
 		int secs = 0;
 		long time = System.currentTimeMillis();
-		for(int i = 300; i <= 800; i += 20){
+		//Hier habe ich vorher mit i <= 800 gearbeitet
+		for(int i = 300; i <= 1000; i += 20){
 			init = new BigMatrix(i);
 			init.randomInit();
 			ml.add(init);
