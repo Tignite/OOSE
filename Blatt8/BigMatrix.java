@@ -12,6 +12,7 @@ public class BigMatrix {
 		for(int i = 0; i < size; i++){
 			rows.add(new ArrayList<Double>(size));
 		}
+		randomInit();
 	}
 	public void randomInit(){
 		Random r = new Random();
@@ -19,7 +20,7 @@ public class BigMatrix {
 			for(int cols = 0; cols < size; cols++){
 				(this.rows.get(rows)).add(r.nextDouble());
 			}
-		}		
+		}
 	}
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
@@ -35,6 +36,12 @@ public class BigMatrix {
 	public double get(int row, int col){
 		if(row < size && col < size) return rows.get(row).get(col);
 		else return 0;
+	}
+	public void set(int row, int col, double data){
+		if(row < size && col < size) rows.get(row).set(col, data);
+	}
+	public void setRow(int row, List<Double> newRow){
+		if(row < size && newRow.size() == size) rows.set(row, newRow);
 	}
 	public int size(){
 		return size;
@@ -60,14 +67,29 @@ public class BigMatrix {
 					for(int entry = 0; entry < size; entry++){
 						sum += this.get(rows, entry) * ref.get(entry, cols);
 					}
-					(newMatrix.rows.get(rows)).add(sum);
+					newMatrix.set(rows, cols, sum);
 				}
 			}
 			return newMatrix;
 		}
 		return null;
 	}
-	public BigMatrix  multiplyMT(BigMatrix  ref ){
-		return null;
+	public BigMatrix  multiplyMT(BigMatrix  ref ) {
+		int parts = 4;
+		BigMatrix newMatrix = new BigMatrix(size);
+		ArrayList<Thread> tl = new ArrayList<Thread>();
+		for(int i = 0; i < parts; i++){
+			tl.add(new Thread(new PartialMultiplyThread(i, parts, this, ref, newMatrix)));
+			tl.get(i).start();
+		}
+		for(int i = 0; i < parts; i++){
+			try {
+				tl.get(i).join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return newMatrix;
 	}
 }
