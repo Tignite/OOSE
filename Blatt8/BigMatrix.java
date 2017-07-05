@@ -76,6 +76,7 @@ public class BigMatrix {
 	}
 	public BigMatrix  multiplyMT(BigMatrix  ref ) {
 		int parts = 4;
+		if(size < 4) parts = 1;
 		BigMatrix newMatrix = new BigMatrix(size);
 		ArrayList<Thread> tl = new ArrayList<Thread>();
 		for(int i = 0; i < parts; i++){
